@@ -1,5 +1,5 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import Keypad from "./Keypad";
 import Key from "../Key/Key";
 
@@ -18,16 +18,40 @@ describe("Keypad", () => {
     );
   });
 
-  it("should render 2 <div />s", () => {
+  it("should render 3 <div />s", () => {
     expect(wrapper.find("div").length).toEqual(3);
   });
 
-  it("renders the values of numbers", () => {
+  it("should render an instance of the Key component for each index of numbers, operators and the Submit Key", () => {
+    const numbers = ["0", "1"];
+    const operators = ["+", "-"];
+    const submit = 1;
+    const keyTotal = numbers.length + operators.length + submit;
+    wrapper.setProps({ numbers, operators });
+    expect(wrapper.find("Key").length).toEqual(keyTotal);
+  });
+});
+
+describe("mounted Keypad", () => {
+  let wrapper;
+  beforeEach(() => {
+    wrapper = mount(
+      <Keypad
+        callOperator={jest.fn()}
+        numbers={[]}
+        operators={[]}
+        setOperator={jest.fn()}
+        updateDisplay={jest.fn()}
+      />
+    );
+  });
+
+  it("renders the values of numbers to the DOM", () => {
     wrapper.setProps({ numbers: ["0", "1", "2"] });
     expect(wrapper.find(".numbers-container").text()).toEqual("012");
   });
 
-  it("renders the values of operators", () => {
+  it("renders the values of operators to the DOM", () => {
     wrapper.setProps({ operators: ["+", "-", "*", "/"] });
     expect(wrapper.find(".operators-container").text()).toEqual("+-*/");
   });
